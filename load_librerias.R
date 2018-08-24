@@ -8,7 +8,7 @@ lib_usual <- c("magrittr",
                "conflicted",
                "ggplot2",
                "dplyr")
-lib_project <- c()
+lib_project <- c("data.table")
 
 # no tocar ----------------------------------------------------------------
 lib <- c(lib_usual, lib_project)
