@@ -55,6 +55,10 @@ base_dat <- base %>% select_if(lubridate::is.Date)
 map2(.x=base_cat, .y=names(base_cat), 
      function(x,y) table(x, dnn=y) %>% knitr::kable())
 
+# En porcentaje
+map2(.x=base_cat, .y=names(base_cat), 
+     function(x,y)table(x, dnn=y) %>% prop.table() %>% '*'(100) %>%   knitr::kable())
+
 # distribucion de la clase
 table(base_raw$clase_ternaria)
 
@@ -63,4 +67,17 @@ histogramas_l <- map2(.x=base_num, .y=names(base_num),
                       function(x,y) hist(x, main=y))
 map_dfr(.x=base_num,
      function(x) summary(x) %>% broom::tidy(),
-     .id="variable")
+     .id="variable") %>% tail
+
+# correlacion de las numericas
+
+cor_num <- base_num %>% cor() 
+cor_num[lower.tri(cor_num,diag=TRUE)]=NA  # Como lo hago con dplyr? Es como un mutate_all pero deberia buscar 
+                                          # otro enfoque que pasar un vector TRUE/FALSE no?
+cor_num2 <- cor_num %>% as.table %>%
+  as.data.frame() %>%  na.omit() %>%
+  rename(correlacion = Freq) %>%
+  dplyr::filter(correlacion > 0.6 | correlacion < -0.6) %>% 
+  arrange(desc(correlacion))
+
+
