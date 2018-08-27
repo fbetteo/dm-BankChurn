@@ -81,3 +81,9 @@ cor_num2 <- cor_num %>% as.table %>%
   arrange(desc(correlacion))
 
 
+### Categoricas
+# gain ratio
+df_gr <- FSelector::gain.ratio(clase_ternaria~., data=base_cat) %>%
+  dplyr::mutate(var=rownames(.)) %>% dplyr::select(2:1) %>% 
+  dplyr::arrange(-attr_importance) %>% rename(Attribute_importance = attr_importance)
+knitr::kable(df_gr)
